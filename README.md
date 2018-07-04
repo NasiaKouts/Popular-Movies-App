@@ -14,8 +14,7 @@ The first part uses simple buttons - look like on-off switch - to navigate from 
 # Screenshots of 2nd version
 
 
-![Alt Text](https://github.com/NasiaKouts/Popular-Movies-App/blob/master/assets/recording2_part1.gif) |
-![Alt Text](https://github.com/NasiaKouts/Popular-Movies-App/blob/master/assets/recording2_part2.gif) |
+<img src="https://github.com/NasiaKouts/Popular-Movies-App/blob/master/assets/recording2_part1.gif" width="280"> |
 <img src="https://github.com/NasiaKouts/Popular-Movies-App/blob/master/assets/popularGrid.png" width="280"> |
 <img src="https://github.com/NasiaKouts/Popular-Movies-App/blob/master/assets/details2version.png" width="280"> |
 <img src="https://github.com/NasiaKouts/Popular-Movies-App/blob/master/assets/details2VersionVideosReviews.png" width="280"> |
