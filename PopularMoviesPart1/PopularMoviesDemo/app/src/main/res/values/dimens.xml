@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="cv_radius">5dp</dimen>
+
+    <dimen name="minor_fix">1dp</dimen>
+    <dimen name="tiny_margin">2dp</dimen>
+    <dimen name="small_margin">4dp</dimen>
+    <dimen name="medium_margin">8dp</dimen>
+    <dimen name="huge_margin">30dp</dimen>
+
+    <dimen name="title_size">20sp</dimen>
+</resources>
