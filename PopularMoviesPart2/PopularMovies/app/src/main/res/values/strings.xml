@@ -1,0 +1,56 @@
+<resources>
+    <string name="app_name">PopularMovies</string>
+
+    <string name="content_provider_authority">aueb.gr.nasiakouts.popularmovies</string>
+    <string name="popular_movies_app">Popular Movies App</string>
+
+
+
+    <!-- Main Activity -->
+    <string name="sort_by_popularity">Popular</string>
+    <string name="sort_by_rating">Top Rated</string>
+    <string name="internet_error">No Internet Connection</string>
+    <string name="try_again">Try again</string>
+    <string name="info_action">Info</string>
+
+    <!-- Navigation Drawer -->
+    <string name="popular">Popular</string>
+    <string name="rating">Top Rated</string>
+    <string name="fav">Favorites</string>
+    <string name="settings">Settings</string>
+
+    <!-- Movie Basic Info -->
+    <string name="basic_info_label">Basic Info</string>
+    <string name="slash_avg" translatable="false">/10</string>
+    <string name="minutes">mins</string>
+
+    <!-- Details Activity-->
+    <string name="plot_label">Plot</string>
+    <string name="review_label">Reviews</string>
+    <string name="no_internet">No Internet Connection</string>
+    <string name="no_favs_stored">No Favorites Stored</string>
+    <string name="movie_id">movieid</string>
+    <string name="share_action">Share</string>
+    <string name="share_chooser_title">Share to</string>
+    <string name="no_trailer_to_share">There is no trailer available to share!</string>
+
+    <!-- Info Activity -->
+    <string name="info_title">Info</string>
+    <string name="project_title">App Development Story</string>
+    <string name="project_context">This app has been developed during the Udacity\'s Android Development Nanodegree, while I was on Google Scholarship. The purpose of the app is to let the user explore movies through a list of popular or top rated movies depending on his choice. Also, there are more info provided about each movie of the list, when the user clicks on the corresponding item. In addition, the user can add a movie to his/her favorites and navigate through them even when offline.</string>
+    <string name="tmdb_title">API Source</string>
+    <string name="tmdb_attribution">This product uses the TMDb API but is not endorsed or certified by TMDb.</string>
+    <string name="title_activity_main2">Main2Activity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <!-- Shared Pref -->
+    <string name="sharedprefisFaved">favorite</string>
+    <!-- Shared Preferences -->
+    <string name="shared_pref_sort_key">Sorting</string>
+    <!-- Save Instance -->
+    <string name="recycler_view_pos">recyclerViewPos</string>
+</resources>

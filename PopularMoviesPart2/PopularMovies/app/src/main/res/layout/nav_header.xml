@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/nav_margin_header"
+    android:paddingBottom="@dimen/nav_margin_header"
+    android:layout_marginTop="@dimen/large_margin">
+
+    <ImageView
+        android:paddingTop="@dimen/medium_margin"
+        android:layout_gravity="center"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/movies_logo"/>
+
+    <TextView
+        android:layout_gravity="center"
+        android:id="@+id/nav_header_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:text="@string/popular_movies_app" />
+
+</LinearLayout>
