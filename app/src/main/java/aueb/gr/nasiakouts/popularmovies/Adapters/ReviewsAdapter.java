@@ -1,15 +1,15 @@
 package aueb.gr.nasiakouts.popularmovies.Adapters;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import aueb.gr.nasiakouts.popularmovies.databinding.ReviewRvItemBinding;
 import java.util.List;
 
 import aueb.gr.nasiakouts.popularmovies.Models.Review;
-import aueb.gr.nasiakouts.popularmovies.R;
 
 /*
     Simple Recycler View adapter
@@ -23,10 +23,10 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewsH
         public TextView review;
         public TextView author;
 
-        public ReviewsHolder(View view){
-            super(view);
-            review = view.findViewById(R.id.review);
-            author = view.findViewById(R.id.review_by);
+        public ReviewsHolder(ReviewRvItemBinding binding){
+            super(binding.getRoot());
+            review = binding.review;
+            author = binding.reviewBy;
         }
     }
 
@@ -37,10 +37,8 @@ public class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewsH
 
     @Override
     public ReviewsHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.review_rv_item, parent, false);
-
-        return new ReviewsHolder(itemView);
+        ReviewRvItemBinding binding = ReviewRvItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+        return new ReviewsHolder(binding);
     }
 
     @Override

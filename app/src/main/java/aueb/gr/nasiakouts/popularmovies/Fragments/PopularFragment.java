@@ -1,8 +1,8 @@
 package aueb.gr.nasiakouts.popularmovies.Fragments;
 
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,12 +11,11 @@ import aueb.gr.nasiakouts.popularmovies.R;
 public class PopularFragment extends MoviesFragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-
+        View view = super.onCreateView(inflater, container, savedInstanceState);
         moviesRecyclerViewAdapter.setSortedBy(getString(R.string.sort_by_popularity));
 
         startLoader();
-        return root;
+        return view;
     }
 
     @Override

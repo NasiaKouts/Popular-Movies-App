@@ -1,54 +1,42 @@
 package aueb.gr.nasiakouts.popularmovies.Activities;
 
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import aueb.gr.nasiakouts.popularmovies.databinding.ActivityMainBinding;
+import com.google.android.material.navigation.NavigationView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.core.view.GravityCompat;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-
 import java.util.List;
-
 import aueb.gr.nasiakouts.popularmovies.Fragments.FavoriteFragment;
 import aueb.gr.nasiakouts.popularmovies.Fragments.MoviesFragment;
 import aueb.gr.nasiakouts.popularmovies.Fragments.PopularFragment;
 import aueb.gr.nasiakouts.popularmovies.Fragments.TopRatedFragment;
 import aueb.gr.nasiakouts.popularmovies.R;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class MainActivity extends AppCompatActivity {
 
-    @BindView(R.id.drawer_layout)
-    DrawerLayout drawerLayout;
-
-    @BindView(R.id.nav_view)
-    NavigationView navigationView;
-
-    @BindView(R.id.toolbar)
-    android.support.v7.widget.Toolbar toolbar;
+    private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         // Replace ActionBar with the Toolbar
-        setSupportActionBar(toolbar);
+        setSupportActionBar(binding.toolbar.getRoot());
         ActionBar actionbar = getSupportActionBar();
         if(actionbar != null) {
             actionbar.setDisplayHomeAsUpEnabled(true);
             actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
         }
 
-        navigationView.setNavigationItemSelectedListener(
+        binding.navView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -96,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                drawerLayout.openDrawer(GravityCompat.START);
+                binding.drawerLayout.openDrawer(GravityCompat.START);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -115,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private int getCheckedItem() {
-        Menu menu = navigationView.getMenu();
+        Menu menu = binding.navView.getMenu();
         for (int i = 0; i < menu.size(); i++) {
             MenuItem item = menu.getItem(i);
             if (item.isChecked()) {
@@ -131,18 +119,18 @@ public class MainActivity extends AppCompatActivity {
             int indexOfCheckedItem = savedInstanceState.getInt(getString(R.string.shared_pref_sort_key), -1);
             if(indexOfCheckedItem != -1) {
                 switch (indexOfCheckedItem) {
-                    case 0: navigationView.setCheckedItem(R.id.nav_popular);
+                    case 0: binding.navView.setCheckedItem(R.id.nav_popular);
                         break;
-                    case 1: navigationView.setCheckedItem(R.id.nav_top_rated);
+                    case 1: binding.navView.setCheckedItem(R.id.nav_top_rated);
                         break;
-                    default: navigationView.setCheckedItem(R.id.nav_favorites);
+                    default: binding.navView.setCheckedItem(R.id.nav_favorites);
                         break;
                 }
             }
         }
         else {
             // default checked item to check is the Popular one;
-            navigationView.setCheckedItem(R.id.nav_popular);
+            binding.navView.setCheckedItem(R.id.nav_popular);
         }
     }
 
@@ -187,6 +175,6 @@ public class MainActivity extends AppCompatActivity {
         setTitle(menuItem.getTitle());
 
         // Close the navigation drawer
-        drawerLayout.closeDrawers();
+        binding.drawerLayout.closeDrawers();
     }
 }

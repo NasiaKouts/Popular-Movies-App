@@ -3,18 +3,18 @@ package aueb.gr.nasiakouts.popularmovies.Adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
+import aueb.gr.nasiakouts.popularmovies.databinding.GridItemBinding;
 
+import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 import aueb.gr.nasiakouts.popularmovies.Activities.DetailsActivity;
@@ -32,29 +32,25 @@ public class MoviesRecyclerViewAdapter extends RecyclerView.Adapter<MoviesRecycl
     private Context context;
     private RecyclerView recyclerView;
     private ArrayList<Movie> moviesList;
-    private FrameLayout recyclerItemRoot;
     private String sortedBy;
     private int numberOfColumns;
 
     public MoviesRecyclerViewAdapter(
             Context context,
             RecyclerView recyclerView,
-            ArrayList<Movie> movies,
-            FrameLayout recyclerItemRoot) {
+            ArrayList<Movie> movies
+    ) {
 
         this.context = context;
         this.recyclerView = recyclerView;
         this.moviesList = movies;
-        this.recyclerItemRoot = recyclerItemRoot;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.grid_item, parent, false);
-
-        return new ViewHolder(itemView);
+        GridItemBinding binding = GridItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+        return new ViewHolder(binding);
     }
 
     @Override
@@ -143,14 +139,14 @@ public class MoviesRecyclerViewAdapter extends RecyclerView.Adapter<MoviesRecycl
                 recyclerView,
                 numberOfColumns);
 
-        Picasso.with(context)
+        Picasso.get()
                 .load(posterUrl)
                 .resize(dimens[0], dimens[1])
                 .error(R.drawable.no_image_available)
                 .into(posterImageView);
 
-        if (recyclerItemRoot != null)
-            recyclerItemRoot.setLayoutParams(new FrameLayout.LayoutParams(dimens[0], dimens[1]));
+        //if (recyclerItemRoot != null)
+        //    recyclerItemRoot.setLayoutParams(new FrameLayout.LayoutParams(dimens[0], dimens[1]));
     }
 
     /*
@@ -176,12 +172,12 @@ public class MoviesRecyclerViewAdapter extends RecyclerView.Adapter<MoviesRecycl
         ImageView sortIcon;
         TextView year;
 
-        public ViewHolder(View view) {
-            super(view);
-            this.moviePoster = view.findViewById(R.id.movie_poster);
-            this.sortInfo = view.findViewById(R.id.sort_info);
-            this.sortIcon = view.findViewById(R.id.grid_item_sort_icon);
-            this.year = view.findViewById(R.id.release_year);
+        public ViewHolder(GridItemBinding binding) {
+            super(binding.getRoot());
+            this.moviePoster = binding.moviePoster;
+            this.sortInfo = binding.sortInfo;
+            this.sortIcon = binding.gridItemSortIcon;
+            this.year = binding.releaseYear;
         }
     }
 }

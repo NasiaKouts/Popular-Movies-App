@@ -1,33 +1,31 @@
 package aueb.gr.nasiakouts.popularmovies.Fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SimpleItemAnimator;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.AsyncTaskLoader;
+import androidx.loader.content.CursorLoader;
+import androidx.loader.content.Loader;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-
+import aueb.gr.nasiakouts.popularmovies.databinding.FragmentMoviesGridBinding;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,28 +39,14 @@ import aueb.gr.nasiakouts.popularmovies.R;
 import aueb.gr.nasiakouts.popularmovies.Utils.MovieItemDecoration;
 import aueb.gr.nasiakouts.popularmovies.Utils.NetworkUtils;
 import aueb.gr.nasiakouts.popularmovies.Utils.TransformUtils;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class MoviesFragment extends Fragment {
 
     public final static String SORTED_BY_POPULARITY_PATH = "popular";
     public final static String SORTED_BY_RATING_PATH = "top_rated";
 
-    @BindView(R.id.connectivity_layout)
-    LinearLayout connectivityProblem;
+    protected FragmentMoviesGridBinding binding;
 
-    @BindView(R.id.movies_recyclerView)
-    RecyclerView recyclerView;
-
-    @BindView(R.id.progress_bar)
-    ProgressBar pb;
-
-    @BindView(R.id.no_favorites_layout)
-    LinearLayout noFavoritesLy;
-
-    protected View root;
     protected static ArrayList<Movie> movies = null;
     protected MoviesRecyclerViewAdapter moviesRecyclerViewAdapter = null;
     protected Parcelable recyclerViewPosition;
@@ -73,8 +57,7 @@ public class MoviesFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        root = inflater.inflate(R.layout.fragment_movies_grid, container, false);
-        ButterKnife.bind(this, root);
+        binding = FragmentMoviesGridBinding.inflate(inflater, container, false);
         setHasOptionsMenu(true);
 
         movies = new ArrayList<>();
@@ -88,16 +71,12 @@ public class MoviesFragment extends Fragment {
             mLayoutManager = new GridLayoutManager(getContext(), 4);
             numOfColumns = 4;
         }
-        recyclerView.setLayoutManager(mLayoutManager);
-        moviesRecyclerViewAdapter = new MoviesRecyclerViewAdapter(
-                getContext(),
-                recyclerView,
-                movies,
-                (FrameLayout) root.findViewById(R.id.grid_item_root));
+        binding.moviesRecyclerView.setLayoutManager(mLayoutManager);
+        moviesRecyclerViewAdapter = new MoviesRecyclerViewAdapter(getContext(), binding.moviesRecyclerView, movies);
         moviesRecyclerViewAdapter.setNumberOfColumns(numOfColumns);
-        recyclerView.setAdapter(moviesRecyclerViewAdapter);
-        ((SimpleItemAnimator)recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
-        recyclerView.addItemDecoration(new MovieItemDecoration(numOfColumns, TransformUtils.dpToPx(getContext(),4)));
+        binding.moviesRecyclerView.setAdapter(moviesRecyclerViewAdapter);
+        ((SimpleItemAnimator)binding.moviesRecyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
+        binding.moviesRecyclerView.addItemDecoration(new MovieItemDecoration(numOfColumns, TransformUtils.dpToPx(getContext(),4)));
 
         if(savedInstanceState != null) {
             recyclerViewPosition = savedInstanceState.getParcelable(getString(R.string.recycler_view_pos));
@@ -105,7 +84,7 @@ public class MoviesFragment extends Fragment {
             rotated = false;
         }
 
-        return root;
+        return binding.getRoot();
     }
 
     @Override
@@ -125,7 +104,7 @@ public class MoviesFragment extends Fragment {
             recyclerViewPosition = ((LinearLayoutManager) layoutManager).findFirstVisibleItemPosition();
         }
         outState.putInt(getString(R.string.gridview_pos), recyclerViewPosition);*/
-        outState.putParcelable(getString(R.string.recycler_view_pos), recyclerView.getLayoutManager().onSaveInstanceState());
+        outState.putParcelable(getString(R.string.recycler_view_pos), binding.moviesRecyclerView.getLayoutManager().onSaveInstanceState());
 
         super.onSaveInstanceState(outState);
     }
@@ -151,12 +130,13 @@ public class MoviesFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        binding = null;
         rotated = true;
     }
 
-    @OnClick(R.id.try_again)
+    //@OnClick(R.id.try_again)
     public void refresh() {
-        connectivityProblem.setVisibility(View.GONE);
+        binding.connectivityLayout.getRoot().setVisibility(View.GONE);
 
         startLoader();
     }
@@ -166,10 +146,10 @@ public class MoviesFragment extends Fragment {
     protected void prepareFetching(){
         movies.clear();
         moviesRecyclerViewAdapter.notifyDataSetChanged();
-        connectivityProblem.setVisibility(View.GONE);
-        pb.setVisibility(View.VISIBLE);
-        recyclerView.setVisibility(View.GONE);
-        noFavoritesLy.setVisibility(View.GONE);
+        binding.connectivityLayout.getRoot().setVisibility(View.GONE);
+        binding.progressBar.setVisibility(View.VISIBLE);
+        binding.moviesRecyclerView.setVisibility(View.GONE);
+        binding.noFavoritesLayout.setVisibility(View.GONE);
     }
 
     protected void showRecyclerView(){
@@ -178,13 +158,13 @@ public class MoviesFragment extends Fragment {
             public void run() {
                 if(recyclerViewPosition != null && rotated){
                     rotated = false;
-                    recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewPosition);
+                    binding.moviesRecyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewPosition);
                 }
             }
         }, 400);
 
-        pb.setVisibility(View.GONE);
-        recyclerView.setVisibility(View.VISIBLE);
+        binding.progressBar.setVisibility(View.GONE);
+        binding.moviesRecyclerView.setVisibility(View.VISIBLE);
     }
 
     public LoaderManager.LoaderCallbacks<ArrayList<Movie>> MovieApiLoader
@@ -257,8 +237,8 @@ public class MoviesFragment extends Fragment {
                 moviesRecyclerViewAdapter.swap(data);
                 showRecyclerView();
             } else {
-                pb.setVisibility(View.GONE);
-                connectivityProblem.setVisibility(View.VISIBLE);
+                binding.progressBar.setVisibility(View.GONE);
+                binding.connectivityLayout.getRoot().setVisibility(View.VISIBLE);
             }
         }
 
@@ -285,6 +265,7 @@ public class MoviesFragment extends Fragment {
                     null, null, null);
         }
 
+        @SuppressLint("Range")
         @Override
         public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
             if(data != null) {
@@ -314,8 +295,8 @@ public class MoviesFragment extends Fragment {
             if (moviesRecyclerViewAdapter.getItemCount() > 0) {
                 showRecyclerView();
             } else {
-                pb.setVisibility(View.GONE);
-                noFavoritesLy.setVisibility(View.VISIBLE);
+                binding.progressBar.setVisibility(View.GONE);
+                binding.noFavoritesLayout.setVisibility(View.VISIBLE);
             }
         }
 

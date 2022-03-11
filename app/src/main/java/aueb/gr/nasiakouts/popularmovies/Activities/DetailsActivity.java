@@ -1,5 +1,6 @@
 package aueb.gr.nasiakouts.popularmovies.Activities;
 
+import android.annotation.SuppressLint;
 import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -11,24 +12,18 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import aueb.gr.nasiakouts.popularmovies.databinding.ActivityDetailsBinding;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.AsyncTaskLoader;
+import androidx.loader.content.CursorLoader;
+import androidx.loader.content.Loader;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -37,15 +32,12 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
-import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.CirclePageIndicator;
 import com.synnapps.carouselview.ViewListener;
 
@@ -65,85 +57,12 @@ import aueb.gr.nasiakouts.popularmovies.Models.VideosResponse;
 import aueb.gr.nasiakouts.popularmovies.R;
 import aueb.gr.nasiakouts.popularmovies.Utils.NetworkUtils;
 import aueb.gr.nasiakouts.popularmovies.Utils.TransformUtils;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 import static aueb.gr.nasiakouts.popularmovies.Data.FavoriteMovieContract.FavoriteMovieEntry.*;
 
 public class DetailsActivity extends AppCompatActivity {
 
-    // -------------------------------------------------
-    //                 BINDINGS
-    @BindView(R.id.details_coordinator_layout)
-    CoordinatorLayout coordinatorLayout;
-
-    @BindView(R.id.details_rating_bar)
-    RatingBar ratingBar;
-
-    @BindView(R.id.details_backdrop_image)
-    ImageView backdrop;
-
-    @BindView(R.id.details_avg)
-    TextView avg;
-
-    @BindView(R.id.detailsReleaseYear)
-    TextView releaseDate;
-
-    @BindView(R.id.length)
-    TextView length;
-
-    @BindView(R.id.plot)
-    TextView plot;
-
-    @BindView(R.id.details_collapsing_toolbar)
-    CollapsingToolbarLayout collapsingToolbarLayout;
-
-    @BindView(R.id.details_toolbar)
-    Toolbar toolbar;
-
-    @BindView(R.id.details_appbar)
-    AppBarLayout appBar;
-
-    @BindView(R.id.details_poster)
-    ImageView poster;
-
-    @BindView(R.id.popularity)
-    TextView popularity;
-
-    @BindView(R.id.collection)
-    TextView collection;
-
-    @BindView(R.id.spoken_languages)
-    TextView moreLanguages;
-
-    @BindView(R.id.genre)
-    TextView genre;
-
-    @BindView(R.id.details_linear_layout)
-    LinearLayout detailsLinear;
-
-    @BindView(R.id.details_connectivity_layout)
-    LinearLayout connectivityProblem;
-
-    @BindView(R.id.details_progress_bar)
-    ProgressBar pb;
-
-    @BindView(R.id.details_nested_scrollview)
-    NestedScrollView nestedScrollView;
-
-    @BindView(R.id.trailer_carousel)
-    CarouselView trailerCarousel;
-
-    @BindView(R.id.reviews_cv)
-    CardView reviewsSection;
-
-    @BindView(R.id.fav_fab)
-    FloatingActionButton addRemoveFavFab;
-
-    @BindView(R.id.reviews_rv)
-    RecyclerView reviewsRv;
-    // -------------------------------------------------
+    private ActivityDetailsBinding binding;
 
     private String setOfExtras;
     private MovieDetails movieDetails;
@@ -157,19 +76,19 @@ public class DetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_details);
-        ButterKnife.bind(this);
+        binding = ActivityDetailsBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        setSupportActionBar(toolbar);
+        setSupportActionBar(binding.detailsToolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
         reviewsAdapter = new ReviewsAdapter(reviewList);
-        reviewsRv.setAdapter(reviewsAdapter);
-        reviewsRv.setLayoutManager(new LinearLayoutManager(this));
-        reviewsRv.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
-        reviewsRv.setNestedScrollingEnabled(true);
+        binding.reviewsRv.setAdapter(reviewsAdapter);
+        binding.reviewsRv.setLayoutManager(new LinearLayoutManager(this));
+        binding.reviewsRv.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+        binding.reviewsRv.setNestedScrollingEnabled(true);
 
         if(savedInstanceState != null) {
             reviewsRvState = savedInstanceState.getParcelable("ListState");
@@ -186,7 +105,7 @@ public class DetailsActivity extends AppCompatActivity {
         if (setOfExtras != null && !setOfExtras.equals("")) {
             fetchCorrespondingData(setOfExtras);
         }
-        addRemoveFavFab.setOnClickListener(new View.OnClickListener() {
+        binding.favFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 addRemoveFavorite();
@@ -198,13 +117,13 @@ public class DetailsActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable("ListState", reviewsRv.getLayoutManager().onSaveInstanceState());
+        outState.putParcelable("ListState", binding.reviewsRv.getLayoutManager().onSaveInstanceState());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        reviewsRv.setNestedScrollingEnabled(true);
+        binding.reviewsRv.setNestedScrollingEnabled(true);
     }
 
     @Override
@@ -257,9 +176,9 @@ public class DetailsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @OnClick(R.id.try_again)
+    //@OnClick(R.id.try_again)
     public void refresh() {
-        connectivityProblem.setVisibility(View.GONE);
+        binding.detailsConnectivityLayout.getRoot().setVisibility(View.GONE);
         if (setOfExtras != null && !setOfExtras.equals("")) {
             fetchCorrespondingData(setOfExtras);
         }
@@ -312,7 +231,7 @@ public class DetailsActivity extends AppCompatActivity {
         // if there wasn't on favorites already, it means the user added just now
         if(cursor != null && cursor.getCount() <= 0){
             cursor.close();
-            addRemoveFavFab.setImageResource(R.drawable.ic_favorite);
+            binding.favFab.setImageResource(R.drawable.ic_favorite);
             editor.putInt(getString(R.string.sharedprefisFaved)+ movieDetails.getId(), IS_FAVED);
             editor.apply();
 
@@ -341,7 +260,7 @@ public class DetailsActivity extends AppCompatActivity {
         // if the movie was already on favorites, it means the user now removed it
         else{
             if(cursor != null) cursor.close();
-            addRemoveFavFab.setImageResource(R.drawable.ic_favorite_border);
+            binding.favFab.setImageResource(R.drawable.ic_favorite_border);
             editor.remove(getString(R.string.sharedprefisFaved) + movieDetails.getId());
             editor.apply();
             getContentResolver().delete(FavoriteMovieContract.FavoriteMovieEntry.buildFlavorsUri(Long.parseLong(extras[0])), null, null);
@@ -360,77 +279,88 @@ public class DetailsActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         int isFavorite = sharedPreferences.getInt(getString(R.string.sharedprefisFaved) + details.getId(), IS_NOT_FAVED);
         if(isFavorite == IS_FAVED) {
-            addRemoveFavFab.setImageResource(R.drawable.ic_favorite);
+            binding.favFab.setImageResource(R.drawable.ic_favorite);
         } else {
-            addRemoveFavFab.setImageResource(R.drawable.ic_favorite_border);
+            binding.favFab.setImageResource(R.drawable.ic_favorite_border);
         }
 
-        collapsingToolbarLayout.setTitle(details.getTitle());
+        binding.detailsCollapsingToolbar.setTitle(details.getTitle());
 
         if (details.getBackdropUrl() == null) {
-            backdrop.setImageResource(R.drawable.gradient_gv_item_border);
+            binding.detailsBackdropImage.setImageResource(R.drawable.gradient_gv_item_border);
         } else {
             int[] dimens = TransformUtils.calculateDimens(this, TransformUtils.BACKDROP_IMAGE_TRANSFORMATION, null, -1);
-            Picasso.with(this).load(details.getBackdropUrl()).resize(dimens[0], dimens[1]).error(R.drawable.gradient_gv_item_border).into(backdrop);
+            Picasso.get()
+                .load(details.getBackdropUrl()).resize(dimens[0], dimens[1])
+                .error(R.drawable.gradient_gv_item_border)
+                .into(binding.detailsBackdropImage);
 
-            CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) appBar.getLayoutParams();
+            CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) binding.detailsAppbar.getLayoutParams();
             lp.width = dimens[0];
             lp.height = dimens[1];
-            appBar.setLayoutParams(lp);
+            binding.detailsAppbar.setLayoutParams(lp);
 
-            LinearLayout.LayoutParams lp2 = (LinearLayout.LayoutParams) collapsingToolbarLayout.getLayoutParams();
+            LinearLayout.LayoutParams lp2 = (LinearLayout.LayoutParams) binding.detailsCollapsingToolbar.getLayoutParams();
             lp2.width = dimens[0];
             lp2.height = dimens[1];
-            collapsingToolbarLayout.setLayoutParams(lp2);
+            binding.detailsCollapsingToolbar.setLayoutParams(lp2);
         }
 
         // in case we are on landscape mode then we set the toolbar collapsed by default in order to avoid taking up the whole screen
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-            appBar.setExpanded(false, true);
+            binding.detailsAppbar.setExpanded(false, true);
         }
 
         if (details.getFullPosterUrl() == null) {
-            poster.setImageResource(R.drawable.no_image_available);
+            binding.detailsPoster.setImageResource(R.drawable.no_image_available);
         } else {
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                 int[] dimens = TransformUtils.calculateDimens(this, TransformUtils.POSTER_TRANSFORMATION_DETAIL_VIEW, null, -1);
-                Picasso.with(this).load(details.getFullPosterUrl()).error(R.drawable.no_image_available).resize(dimens[0], dimens[1]).into(poster);
+                Picasso.get()
+                    .load(details.getFullPosterUrl())
+                    .error(R.drawable.no_image_available)
+                    .resize(dimens[0], dimens[1])
+                    .into(binding.detailsPoster);
             } else {
                 int[] dimens = TransformUtils.calculateDimens(this, TransformUtils.POSTER_TRANSFORMATION_DETAIL_VIEW_LAND, null, -1);
-                Picasso.with(this).load(details.getFullPosterUrl()).error(R.drawable.no_image_available).resize(dimens[0], dimens[1]).into(poster);
+                Picasso.get()
+                    .load(details.getFullPosterUrl())
+                    .error(R.drawable.no_image_available)
+                    .resize(dimens[0], dimens[1])
+                    .into(binding.detailsPoster);
             }
         }
 
-        ratingBar.setRating((float) (details.getAvgVote() / 2.0));
+        binding.detailsRatingBar.setRating((float) (details.getAvgVote() / 2.0));
 
-        avg.setText("" + details.getAvgVote());
+        binding.detailsAvg.setText("" + details.getAvgVote());
 
-        popularity.setText("" + (int) details.getPopularity());
+        binding.popularity.setText("" + (int) details.getPopularity());
 
-        collection.setText(details.getCollectionInfo());
+        binding.collection.setText(details.getCollectionInfo());
 
-        releaseDate.setText(details.getReleaseDateModified());
+        binding.detailsReleaseYear.setText(details.getReleaseDateModified());
 
-        length.setText("" + details.getRuntime());
+        binding.length.setText("" + details.getRuntime());
 
-        moreLanguages.setText(details.getMoreLanguagesFullString());
+        binding.spokenLanguages.setText(details.getMoreLanguagesFullString());
 
-        genre.setText(details.getGenresFullString());
+        binding.genre.setText(details.getGenresFullString());
 
-        plot.setText(details.getOverview());
+        binding.plot.setText(details.getOverview());
 
         /*
             Populate trailer's carousel view
          */
         final VideosInfo[] trailers = details.getTrailers();
-        if(trailers != null && trailerCarousel != null){
-            trailerCarousel.setViewListener(new ViewListener() {
+        if(trailers != null && binding.trailerCarousel != null){
+            binding.trailerCarousel.setViewListener(new ViewListener() {
                 @Override
                 public View setViewForPosition(final int position) {
                     View view = getLayoutInflater().inflate(R.layout.trailer_carousel, null);
 
                     ImageView image = view.findViewById(R.id.carousel_trailer_thumbnail);
-                    Picasso.with(getApplicationContext())
+                    Picasso.get()
                             .load(NetworkUtils.buildYoutubeThumbnailUrl(trailers[position].getKey()))
                             .fit()
                             .centerCrop()
@@ -440,7 +370,7 @@ public class DetailsActivity extends AppCompatActivity {
                     TextView text = view.findViewById(R.id.carousel_trailer_name);
                     text.setText(trailers[position].getName());
 
-                    trailerCarousel.setIndicatorGravity(Gravity.CENTER | Gravity.BOTTOM);
+                    binding.trailerCarousel.setIndicatorGravity(Gravity.CENTER | Gravity.BOTTOM);
 
                     ImageView playTrailer = view.findViewById(R.id.play_trailer);
                     playTrailer.setOnClickListener(new View.OnClickListener() {
@@ -453,13 +383,13 @@ public class DetailsActivity extends AppCompatActivity {
                     return view;
                 }
             });
-            trailerCarousel.setPageCount(trailers.length);
+            binding.trailerCarousel.setPageCount(trailers.length);
         }
         if(!details.isThereValidTrailer()) {
-            trailerCarousel.setVisibility(View.GONE);
+            binding.trailerCarousel.setVisibility(View.GONE);
         }
         else if(trailers != null && trailers.length == 1){
-            CirclePageIndicator indicator = trailerCarousel.findViewById(R.id.indicator);
+            CirclePageIndicator indicator = binding.trailerCarousel.findViewById(R.id.indicator);
             if(indicator !=null) indicator.setVisibility(View.GONE);
         }
 
@@ -477,7 +407,7 @@ public class DetailsActivity extends AppCompatActivity {
             reviewList.addAll(Arrays.asList(details.getReviews()));
             reviewsAdapter.notifyDataSetChanged();
             resetReviewsRecyclerViewHeight();
-            reviewsRv.getLayoutManager().onRestoreInstanceState(reviewsRvState);
+            binding.reviewsRv.getLayoutManager().onRestoreInstanceState(reviewsRvState);
         }
     }
 
@@ -519,36 +449,37 @@ public class DetailsActivity extends AppCompatActivity {
             return;
         }
 
-        ViewTreeObserver vto = reviewsRv.getViewTreeObserver();
+        ViewTreeObserver vto = binding.reviewsRv.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                reviewsRv.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                int height = reviewsRv.getMeasuredHeight();
+                binding.reviewsRv.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                int height = binding.reviewsRv.getMeasuredHeight();
                 if(height > 500) {
-                    reviewsRv.setNestedScrollingEnabled(true);
-                    LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) reviewsRv.getLayoutParams();
+                    binding.reviewsRv.setNestedScrollingEnabled(true);
+                    LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) binding.reviewsRv.getLayoutParams();
                     lp.height = 500;
-                    reviewsRv.setLayoutParams(lp);
+                    binding.reviewsRv.setLayoutParams(lp);
                 }
             }
         });
     }
 
     private void prepareFetching(){
-        pb.setVisibility(View.VISIBLE);
-        nestedScrollView.setVisibility(View.INVISIBLE);
+        binding.detailsProgressBar.setVisibility(View.VISIBLE);
+        binding.detailsNestedScrollview.setVisibility(View.INVISIBLE);
     }
 
     private void displayDetails(MovieDetails details){
         populateUi(details);
         movieDetails = details;
-        nestedScrollView.setVisibility(View.VISIBLE);
-        detailsLinear.setVisibility(View.VISIBLE);
-        connectivityProblem.setVisibility(View.GONE);
-        reviewsRv.setVisibility(View.VISIBLE);
+        binding.detailsNestedScrollview.setVisibility(View.VISIBLE);
+        binding.detailsLinearLayout.setVisibility(View.VISIBLE);
+        binding.detailsConnectivityLayout.getRoot().setVisibility(View.GONE);
+        binding.reviewsRv.setVisibility(View.VISIBLE);
     }
 
+    @SuppressLint("Range")
     private MovieDetails getMovieDetailsObjectFromCursor(Cursor data){
         if(data == null)
             return null;
@@ -690,12 +621,12 @@ public class DetailsActivity extends AppCompatActivity {
 
         @Override
         public void onLoadFinished(@NonNull Loader<MovieDetails> loader, MovieDetails data) {
-            pb.setVisibility(View.GONE);
+            binding.detailsProgressBar.setVisibility(View.GONE);
             if (data == null) {
-                detailsLinear.setVisibility(View.GONE);
-                connectivityProblem.setVisibility(View.VISIBLE);
-                nestedScrollView.setVisibility(View.GONE);
-                collapsingToolbarLayout.setTitle(getString(R.string.no_internet));
+                binding.detailsLinearLayout.setVisibility(View.GONE);
+                binding.detailsConnectivityLayout.getRoot().setVisibility(View.VISIBLE);
+                binding.detailsNestedScrollview.setVisibility(View.GONE);
+                binding.detailsCollapsingToolbar.setTitle(getString(R.string.no_internet));
             } else {
                 displayDetails(data);
             }
@@ -735,17 +666,17 @@ public class DetailsActivity extends AppCompatActivity {
 
             if(data != null) data.close();
 
-            pb.setVisibility(View.GONE);
+            binding.detailsProgressBar.setVisibility(View.GONE);
 
             if (movie == null) {
-                detailsLinear.setVisibility(View.GONE);
-                connectivityProblem.setVisibility(View.VISIBLE);
-                nestedScrollView.setVisibility(View.GONE);
-                collapsingToolbarLayout.setTitle(getString(R.string.no_internet));
+                binding.detailsLinearLayout.setVisibility(View.GONE);
+                binding.detailsConnectivityLayout.getRoot().setVisibility(View.VISIBLE);
+                binding.detailsNestedScrollview.setVisibility(View.GONE);
+                binding.detailsCollapsingToolbar.setTitle(getString(R.string.no_internet));
             } else {
                 displayDetails(movie);
                 Toast.makeText(getApplicationContext(),"No reviews display on favorites",Toast.LENGTH_SHORT).show();
-                reviewsSection.setVisibility(View.GONE);
+                binding.reviewsRv.setVisibility(View.GONE);
             }
         }
 
@@ -755,6 +686,4 @@ public class DetailsActivity extends AppCompatActivity {
         }
     };
     // ------------------------------------------
-
-
 }
