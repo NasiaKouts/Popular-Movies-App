@@ -7,12 +7,11 @@ plugins {
 }
 
 android {
-    compileSdkVersion(ConfigData.COMPILE_SDK_VERSION)
-
     defaultConfig {
         applicationId = "aueb.gr.nasiakouts.popularmovies"
-        minSdkVersion(ConfigData.MIN_SDK_VERSION)
-        targetSdkVersion(ConfigData.TARGET_SDK_VERSION)
+        compileSdk = ConfigData.COMPILE_SDK_VERSION
+        minSdk = ConfigData.MIN_SDK_VERSION
+        targetSdk = ConfigData.TARGET_SDK_VERSION
         versionCode = ConfigData.APP_VERSION_CODE
         versionName = ConfigData.APP_VERSION_NAME
     }
